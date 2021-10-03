@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/people")
 public class PeopleController {
@@ -17,6 +19,11 @@ public class PeopleController {
     @Autowired
     public PeopleController(PeopleService service) {
         this.service = service;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Person>> list() {
+        return new ResponseEntity<>(service.list(), HttpStatus.OK);
     }
 
     @PostMapping()

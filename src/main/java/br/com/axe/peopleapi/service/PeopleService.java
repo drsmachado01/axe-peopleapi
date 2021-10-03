@@ -5,6 +5,8 @@ import br.com.axe.peopleapi.repository.PeopleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PeopleService {
     private PeopleRepository repo;
@@ -16,5 +18,9 @@ public class PeopleService {
 
     public Person persist(Person person) {
         return repo.save(person);
+    }
+
+    public List<Person> list() {
+        return repo.findAll();
     }
 }
