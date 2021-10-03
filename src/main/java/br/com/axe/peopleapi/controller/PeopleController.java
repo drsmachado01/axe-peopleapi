@@ -26,9 +26,24 @@ public class PeopleController {
         return new ResponseEntity<>(service.list(), HttpStatus.OK);
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<Person> findById(@PathVariable Long id) {
+        return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
+    }
+
     @PostMapping()
     public ResponseEntity<Person> persist(@RequestBody Person person) {
         return new ResponseEntity<>(service.persist(person), HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Person> update(@PathVariable Long id, @RequestBody Person person) {
+        return new ResponseEntity<>(service.update(id, person), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id) {
+        return new ResponseEntity<>(service.delete(id), HttpStatus.OK);
     }
 
 }
