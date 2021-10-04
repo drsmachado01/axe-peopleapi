@@ -2,7 +2,9 @@ package br.com.axe.peopleapi.controller;
 
 import br.com.axe.peopleapi.dto.request.PersonRequest;
 import br.com.axe.peopleapi.dto.response.PersonResponse;
+import br.com.axe.peopleapi.exception.PersonNotFoundException;
 import br.com.axe.peopleapi.service.PeopleService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +15,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/people")
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class PeopleController {
 
     private PeopleService service;
-
-    @Autowired
-    public PeopleController(PeopleService service) {
-        this.service = service;
-    }
 
     @GetMapping
     public ResponseEntity<List<PersonResponse>> list() {
@@ -28,24 +26,24 @@ public class PeopleController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<PersonResponse> findById(@PathVariable Long id) {
+    public ResponseEntity<PersonResponse> findById(@PathVariable Long id) throws PersonNotFoundException {
         return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
     }
 
     @PostMapping()
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<PersonResponse> persist(@RequestBody @Valid PersonRequest person) {
-        return new ResponseEntity<>(service.persist(person), HttpStatus.OK);
+        return new ResponseEntity<>(service.persist(person), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PersonResponse> update(@PathVariable Long id, @RequestBody @Valid PersonRequest person) {
+    public ResponseEntity<PersonResponse> update(@PathVariable Long id, @RequestBody @Valid PersonRequest person) throws PersonNotFoundException {
         return new ResponseEntity<>(service.update(id, person), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id) {
-        return new ResponseEntity<>(service.delete(id), HttpStatus.OK);
+        service.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }
