@@ -26,8 +26,12 @@ public class PeopleController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<PersonResponse> findById(@PathVariable Long id) throws PersonNotFoundException {
-        return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
+    public ResponseEntity<PersonResponse> findById(@PathVariable Long id) {
+        try {
+            return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
+        } catch (PersonNotFoundException ex) {
+            return new ResponseEntity(ex.getLocalizedMessage(), HttpStatus.NO_CONTENT);
+        }
     }
 
     @PostMapping()
@@ -36,14 +40,22 @@ public class PeopleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PersonResponse> update(@PathVariable Long id, @RequestBody @Valid PersonRequest person) throws PersonNotFoundException {
-        return new ResponseEntity<>(service.update(id, person), HttpStatus.OK);
+    public ResponseEntity<PersonResponse> update(@PathVariable Long id, @RequestBody @Valid PersonRequest person) {
+        try {
+            return new ResponseEntity<>(service.update(id, person), HttpStatus.OK);
+        } catch (PersonNotFoundException ex) {
+            return new ResponseEntity(ex.getLocalizedMessage(), HttpStatus.NO_CONTENT);
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id) {
-        service.delete(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            service.delete(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (PersonNotFoundException ex) {
+            return new ResponseEntity(ex.getLocalizedMessage(), HttpStatus.NO_CONTENT);
+        }
     }
 
 }

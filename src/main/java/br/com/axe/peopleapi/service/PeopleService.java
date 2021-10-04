@@ -34,12 +34,12 @@ public class PeopleService {
 
     public PersonResponse findById(Long id) throws PersonNotFoundException {
         Optional<Person> op = repo.findById(id);
-            return personMapper.toDTO(op.orElseThrow());
+            return personMapper.toDTO(op.orElseThrow(() -> new PersonNotFoundException(id)));
     }
 
     public PersonResponse update(Long id, PersonRequest personRequest) throws PersonNotFoundException {
         Person person = personMapper.toModel(personRequest);
-        Person person_ = repo.findById(id).orElseThrow();
+        Person person_ = repo.findById(id).orElseThrow(() -> new PersonNotFoundException(id));
         person_.setPhones(person.getPhones());
         person_.setFirstName(person.getFirstName());
         person_.setLastName(person.getLastName());
@@ -47,7 +47,7 @@ public class PeopleService {
         return personMapper.toDTO(repo.save(person_));
     }
 
-    public Boolean delete(Long id) {
+    public Boolean delete(Long id) throws PersonNotFoundException {
         repo.delete(repo.findById(id).get());
         return true;
     }
